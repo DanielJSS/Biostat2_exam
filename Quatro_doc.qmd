@@ -6,7 +6,13 @@ editor: visual
 
 ## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+**Paper**:
+
+Sandau, N., Fabian, Y., Bruggisser, O.T., Rohr, R.P., Naisbit, R.E., Kehrli, P., Aebi, A. and Bersier, L.-F. (2017), The relative contributions of species richness and species composition to ecosystem functioning. Oikos, 126: 782-791. <https://doi.org/10.1111/oik.03901>
+
+**Data set doi:**
+
+Sandau, Nadine et al. (2016), Data from: The relative contribution of species richness and species composition to ecosystem functioning, Dryad, Dataset, <https://doi.org/10.5061/dryad.44bm6>
 
 ## Running Code
 
