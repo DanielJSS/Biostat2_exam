@@ -6,27 +6,89 @@ editor: visual
 
 ## Quarto
 
-**Paper**:
+1.  **Paper**:
 
-Sandau, N., Fabian, Y., Bruggisser, O.T., Rohr, R.P., Naisbit, R.E., Kehrli, P., Aebi, A. and Bersier, L.-F. (2017), The relative contributions of species richness and species composition to ecosystem functioning. Oikos, 126: 782-791. <https://doi.org/10.1111/oik.03901>
+Maureaud Aurore, Hodapp Dorothee, van Denderen P. Daniël, Hillebrand Helmut, Gislason Henrik, Spaanheden Dencker Tim, Beukhof Esther and Lindegren Martin. 2019, Biodiversity--ecosystem functioning relationships in fish communities: biomass is related to evenness and the environment, not to species richnessProc. R. Soc. B.2862019118920191189 http://doi.org/10.1098/rspb.2019.1189
 
 **Data set doi:**
 
-Sandau, Nadine et al. (2016), Data from: The relative contribution of species richness and species composition to ecosystem functioning, Dryad, Dataset, <https://doi.org/10.5061/dryad.44bm6>
+Maureaud, Aurore et al. (2019), Data from: Biodiversity-ecosystem functioning relationships in fish communities: biomass is related to evenness and the environment, not to species richness, Dryad, Dataset, <https://doi.org/10.5061/dryad.j76d7t2>
+
+2.  When it comes to how well I was able to reproduce the part of the paper I was working on, I think I managed to make the plot look rather similar. The colors, axis increments, arrows, and dots looks similar. The data set had a "readME" file explaining what the variables mean, and In the paper itself, the figure text did explain well what was on the different axis making reproducing the plot not such a difficult task. What was difficult was getting a guide legend for the Dissimilarity as shown in the original paper. I added code for this, as I have done before on other projects, however nothing papers to show up on my plot and after many attempts and research I could not figure out why it does not show up. Furthermore, the original paper includes some pie charts with images of fish, and I believe these were added after the fact in a different program like inkscape. Looking through their code after the fact, the code does not include the guide that I struggled with getting, therefore this was added later and not in the code itself. Meaning that much of the figure was a combination of code and some drawing software making it hard to reproduce identically.
+
+    ![My attemt at recreating figure 3 form the paper](Figure%203.png)
+
+3.  In the paper itself, they have a section on data availability, there they explain that all data in on "datadryad.org" and that an R code for all figures and Statistics is available in the electronic supplement material. This is a good thing for reproduce-ability The code itself was available, and the link did work. The code is written nicely, but with little expectation on what the lines of code does. Making this difficult to interpret exactly why the code was written the way that it was. a readME file was added in the github, providing some instructions on the data and code, making this easier for others to reproduce. The github repository has the data and a readme file, however no revn project, therefor it could be more transparent and reproducible. For the authors to use the best practice for reproducability, they could have added better comments to know what the code did and why, having good code documentation could have made this more reproducible and understandable. They could have added a revn project in their github to be more transparent to what packages and versions were used, making a more reproducible environment. While the data itself was available on both datadryad and github, I am not sure whether this is the RAW data or this has been cleaned by hand. It would be optimal if they added their raw data on places like Neotome, to be more transparent making sure they did not clean the data with a bias or with bad intent.
 
 ## Running Code
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+# Required packages
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2")
+
+# Install required packages if not already installed
+for (pkg in required_packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
 ```
 
-You can add options to executable code like this
-
 ```{r}
-#| echo: false
-2 * 2
+# Set the file path to get data 
+file_path <- "Data/Dataset_S1.csv"
+
+# Read the CSV file
+data <- read_delim(file_path, col_types = cols(.default = "character"), delim = ",")
+
+####I want to create the Figure 3, with biomass and eveness, using dissimilarity. 
+
+#Converting variables to numeric so that it works for the plot 
+data$evesimpson <- as.numeric(data$evesimpson)
+data$jac <- as.numeric(data$jac)
+data$biomass <- as.numeric(data$biomass) 
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+#Plotting the scatterplot 
+plot <- ggplot(data, aes(x = evesimpson, y = biomass/1000000, color = jac)) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = c(0.05, 0.1, 0.2)) +
+  scale_y_continuous(
+    trans = "log",
+    breaks = c(0.00, 0.05, 0.5, 2.5),
+    labels = c(0.00, 0.05, 0.5, 2.5)
+  ) +
+  labs(color = "Dissimilarity") +
+  scale_color_gradientn(
+    colors = colorRampPalette(c("blue", "beige", "brown"))(6),
+    breaks = levels(data$jac),
+    labels = levels(data$jac)
+  ) +
+  xlab("evenness") +
+  ylab("biomass") +
+  theme(    # Axis labels and theme customization
+    panel.background = element_rect(fill = "white", color = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    axis.line = element_line(color = "black", size = 1),
+    axis.ticks = element_line(color = "black", size = 1),
+    axis.line.x = element_line(arrow = arrow(type = "open", ends = "last", length = unit(0.5, "cm"), angle = 20)),
+    axis.line.y = element_line(arrow = arrow(type = "open", ends = "last", length = unit(0.5, "cm"), angle = 20)),
+    axis.text = element_text(size = 12),
+    plot.margin = margin(0, 0, 0, 0),
+    legend.position = "bottom",
+    legend.box = "horizontal"
+  ) +
+  guides(color = guide_colorbar(title = "Dissimilarity",     # Customize color legend guide, this does not work
+                                direction = "horizontal",
+                                barwidth = 10, 
+                                barheight = 1))
+
+
+# Display the plot
+print(plot)
+```

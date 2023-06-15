@@ -1,32 +1,31 @@
-library(tidyverse)
-library(readxl)
-library(viridisLite)
-library(scales)
 
-# Set the file path
+# Required packages
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2")
+
+# Install required packages if not already installed
+for (pkg in required_packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
+
+
+# Set the file path to get data 
 file_path <- "Data/Dataset_S1.csv"
 
 # Read the CSV file
 data <- read_delim(file_path, col_types = cols(.default = "character"), delim = ",")
 
-#I want to create the Figure 3, with biomass and eveness, using dissimilarity. 
-#First i need to alter the biomass in the dataframe from kg, in to tonns and then convert to a log scale. 
+####I want to create the Figure 3, with biomass and eveness, using dissimilarity. 
 
-# Log-transform the biomass column
-data$biomass <- as.numeric(data$biomass) 
-data$log_biomass <- log(data$biomass)
-
-
-
+#Converting variables to numeric so that it works for the plot 
 data$evesimpson <- as.numeric(data$evesimpson)
-
-# Log-transform the biomass column
-
-# Convert jaccard_dissimilarity to factor
 data$jac <- as.numeric(data$jac)
+data$biomass <- as.numeric(data$biomass) 
 
-
-ggplot(data, aes(x = evesimpson, y = biomass/1000000, color = jac)) +
+#Plotting the scatterplot 
+plot <- ggplot(data, aes(x = evesimpson, y = biomass/1000000, color = jac)) +
   geom_point(size = 3) +
   scale_x_continuous(breaks = c(0.05, 0.1, 0.2)) +
   scale_y_continuous(
@@ -42,7 +41,7 @@ ggplot(data, aes(x = evesimpson, y = biomass/1000000, color = jac)) +
   ) +
   xlab("evenness") +
   ylab("biomass") +
-  theme(
+  theme(    # Axis labels and theme customization
     panel.background = element_rect(fill = "white", color = "black"),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -56,7 +55,11 @@ ggplot(data, aes(x = evesimpson, y = biomass/1000000, color = jac)) +
     legend.position = "bottom",
     legend.box = "horizontal"
   ) +
-  guides(color = guide_colorbar(title = "Dissimilarity", direction = "horizontal", barwidth = 10, barheight = 1))
+  guides(color = guide_colorbar(title = "Dissimilarity",     # Customize color legend guide
+                                direction = "horizontal",
+                                barwidth = 10, 
+                                barheight = 1))
 
 
-
+# Display the plot
+print(plot)
