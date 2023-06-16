@@ -140,31 +140,20 @@ As we can see on the output of the lm model, the model suggests that treatment d
 A potential better model would be one that take in to account the effect of the tanks as a predictor. This would be a mixed effects model. By using a mixed effect model, also known as random-effects model, we can model the random effects tank will have on the growth, and give an understanding of within-tank variability.
 
 ```{r}
+library(lme4)
 #Creating a mixed effects model to include tank as a predicotr variable. 
 mixed_model <- lmer(growth ~ treatment + (1 | tank), data = fish_data)
 #Showing model sumamry 
 summary(mixed_model)
 ```
 
-![Mixed effect model output](images/mixed effect model 2.JPG)
+![Mixed effect model output](mixed effect model 2.JPG)
 
-The model did get an error code with "boundary (singular) fit: see help('isSingular') ", menaing that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.
+The model did get an error code with "boundary (singular) fit: see help('isSingular')", menaing that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.
 
 I tried different mixed effects model like
 
-mixed_model \<- lmer(growth \~ treatment + (1 + treatment \| tank), data = fish_data)
-but with the same result of this error code.
-
-therefore I will try a GLMM to see if the issue goes away
-
-```{r}
-glmm_model <- glmer(growth ~ treatment + (1 | tank), data = fish_data, family = Gamma())
-summary(glmm_model)
-```
-
-![GLMM output](images/glmm.JPG)
-
-While the error code persisted, the estimate of treatment now has a much wider confidence interval (-0.017) meaning it does contain the value 0, this fits better with the simulated data where there is no effect of treatment.
+mixed_model \<- lmer(growth \~ treatment + (1 + treatment \| tank), data = fish_data) but with the same result of this error code.
 
 2.  [**What advice do you give the authors?**]{.underline}
 
@@ -203,7 +192,7 @@ ggplot() +
         panel.grid.minor = element_blank())
 ```
 
-![Lynx TS plot](Lynx TS plot.png)
+![Lynx TS plot](Lynx%20TS%20plot.png)
 
 -   [**Now over to examine the acf and pacf:**]{.underline}
 
@@ -220,9 +209,9 @@ plot(pacf_result, main = "PACF of Lynx Data")
 
 ```
 
-![ACF output](ACF lynx.png)
+![ACF output](ACF%20lynx.png)
 
-![PACF output](PACF of lynx.png)
+![PACF output](PACF%20of%20lynx.png)
 
 When looking at ACF plots, we look for spikes above the blue line, if the plot has these lines about the blue dashed like it indicates auto correlations of the lags.
 
@@ -248,7 +237,7 @@ The response variable here is species richness, given how this is count data (nu
 
     An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.
 
--    [Fit the model]{.underline}
+-   [Fit the model]{.underline}
 
 ```{r}
 # Fit the multiple regression model
@@ -258,7 +247,7 @@ model <- lm(noSpecies ~ temperature + pH + depth, data = df)
 summary(model)
 ```
 
-![Multiple regression model output](images/multiple regression output.JPG)
+![Multiple regression model output](multiple regression output.JPG)
 
 Here we can see that temperature is the only thing with a significant p value, which could be interpreted in a way that temperature if the only thing affecting species richness.
 
@@ -276,13 +265,13 @@ qqline(model$residuals)
 plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
 ```
 
-![residual vs. fitted values](Residual vs fitted value (task4).png)
+![residual vs. fitted values](Residual%20vs%20fitted%20value%20(task4).png)
 
-![Q-Q plot](Normal q-q plot.png)
+![Q-Q plot](Normal%20q-q%20plot.png)
 
-![Normal Q-Q plot w/line](normal q-q plot with line.png)
+![Normal Q-Q plot w/line](normal%20q-q%20plot%20with%20line.png)
 
-![Heteroscedasticity](Heteroscedasticity lm model (taks 4).png)
+![Heteroscedasticity](Heteroscedasticity%20lm%20model%20(taks%204).png)
 
 -   There does not seem to be any pattern in the Heteroscedasticity, which is a good thing. Model checks out for this part.
 
@@ -343,8 +332,6 @@ print(results)
 
 ```
 
-![Species richness predictions at different temperatures](images/speceis richness predictions.JPG)
-
 -   [Show results in both in table and graph]{.underline}:
 
 ```{r}
@@ -361,11 +348,12 @@ segments(results$Temperature, results$LowerCI, results$Temperature, results$Uppe
 legend("topleft", legend = "95% Confidence Interval", lty = 2, col = "blue")
 ```
 
-![Speciess richness at differing temperatures](Speciess richenss at different temperatures figure.png)
+![Speciess richness at differing temperatures](Speciess%20richenss%20at%20different%20temperatures%20figure.png)
 
 -   [Now to make a table using the knitr package:]{.underline}
 
 ```{r}
+library(knitr)
 #Create a data frame with predictions and confidence intervals
 results_table <- data.frame(Temperature = new_temperatures,
                       SpeciesRichness = predictions[, "fit"],
@@ -376,7 +364,7 @@ results_table <- data.frame(Temperature = new_temperatures,
 kable(results_table, caption = "Predicted Species Richness at Different Temperatures")
 ```
 
-![Table of speciess richness at differing temperatures](table species richness at different temperatures.JPG)
+![Table of speciess richness at differing temperatures](table%20species%20richness%20at%20different%20temperatures.JPG)
 
 [**Write a biological interpretation of your model.**]{.underline}
 

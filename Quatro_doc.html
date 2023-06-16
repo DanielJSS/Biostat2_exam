@@ -96,6 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="quarto" class="level2">
 <h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
+<p>My github: https://github.com/DanielJSS/Biostat2_exam</p>
 <ol type="1">
 <li><strong>Paper</strong>:</li>
 </ol>
@@ -104,12 +105,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Maureaud, Aurore et al.&nbsp;(2019), Data from: Biodiversity-ecosystem functioning relationships in fish communities: biomass is related to evenness and the environment, not to species richness, Dryad, Dataset, <a href="https://doi.org/10.5061/dryad.j76d7t2" class="uri">https://doi.org/10.5061/dryad.j76d7t2</a></p>
 <ol start="2" type="1">
 <li><p>When it comes to how well I was able to reproduce the part of the paper I was working on, I think I managed to make the plot look rather similar. The colors, axis increments, arrows, and dots looks similar. The data set had a “readME” file explaining what the variables mean, and In the paper itself, the figure text did explain well what was on the different axis making reproducing the plot not such a difficult task. What was difficult was getting a guide legend for the Dissimilarity as shown in the original paper. I added code for this, as I have done before on other projects, however nothing papers to show up on my plot and after many attempts and research I could not figure out why it does not show up. Furthermore, the original paper includes some pie charts with images of fish, and I believe these were added after the fact in a different program like inkscape. Looking through their code after the fact, the code does not include the guide that I struggled with getting, therefore this was added later and not in the code itself. Meaning that much of the figure was a combination of code and some drawing software making it hard to reproduce identically.</p>
-<img src="Figure%203.png" class="img-fluid" alt="My attemt at recreating figure 3 form the paper"></li>
-<li><p>In the paper itself, they have a section on data availability, there they explain that all data in on “datadryad.org” and that an R code for all figures and Statistics is available in the electronic supplement material. This is a good thing for reproduce-ability The code itself was available, and the link did work. The code is written nicely, but with little expectation on what the lines of code does. Making this difficult to interpret exactly why the code was written the way that it was. The github repository has the data and a readme file, however no revn project, therefor it could be more transparent and reproducible.</p></li>
+<img src="Figure%203.png" class="img-fluid" alt="My attempt at recreating figure 3 form the paper"></li>
+<li><p>In the paper itself, they have a section on data availability, there they explain that all data in on “datadryad.org” and that an R code for all figures and Statistics is available in the electronic supplement material. This is a good thing for reproduce-ability The code itself was available, and the link did work. The code is written nicely, but with little expectation on what the lines of code does. Making this difficult to interpret exactly why the code was written the way that it was. a readME file was added in the github, providing some instructions on the data and code, making this easier for others to reproduce. The github repository has the data and a readme file, however no revn project, therefor it could be more transparent and reproducible. For the authors to use the best practice for reproducability, they could have added better comments to know what the code did and why, having good code documentation could have made this more reproducible and understandable. They could have added a revn project in their github to be more transparent to what packages and versions were used, making a more reproducible environment. While the data itself was available on both datadryad and github, I am not sure whether this is the RAW data or this has been cleaned by hand. It would be optimal if they added their raw data on places like Neotome, to be more transparent making sure they did not clean the data with a bias or with bad intent.</p></li>
 </ol>
 </section>
-<section id="running-code" class="level2">
-<h2 class="anchored" data-anchor-id="running-code">Running Code</h2>
+<section id="running-code-for-part-a" class="level2">
+<h2 class="anchored" data-anchor-id="running-code-for-part-a">Running Code for part A</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Required packages</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>required_packages <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"readxl"</span>, <span class="st">"viridisLite"</span>, <span class="st">"scales"</span>, <span class="st">"ggplot2"</span>)</span>
@@ -215,6 +216,477 @@ The following object is masked from 'package:readr':
 <p><img src="Quatro_doc_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p><strong>Part B</strong></p>
+<ol type="1">
+<li><u><strong>A colleague is testing the effect of a treatment on fish growth. They have ten tanks (five for each treatment). Each tank with ten fish. They plan to fit the model</strong></u></li>
+</ol>
+<p><u><strong>Answer:</strong></u></p>
+<ul>
+<li><p>The main issue with this plan is that they only look at treatment as the predictor variable. As if treatment is the only thing that will in any way effect the outcome. If this was the only thing that was different between experiments, this could work. However, here the fish is also in different tanks. Meaning we cannot just ignore the effects of the tanks, at least not without testing for it first. Therefor, just assuming a linear model with only treatment as predictor is not a good plan, and ignores the effect tanks might have for the results outcome.</p></li>
+<li><p><u><strong>Simulate the data, and show the problem of this model</strong></u></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Simulating the data to show the problem </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># Setting seed for reproducibility</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating the data</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> <span class="dv">50</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>tank <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">times =</span> <span class="dv">20</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>fish <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">times =</span> <span class="dv">10</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>growth <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="fu">ifelse</span>(treatment <span class="sc">==</span> <span class="st">"A"</span>, <span class="dv">10</span>, <span class="dv">12</span>), <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating the data frame</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>fish_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(treatment, tank, fish, growth)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting the initial model</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>initial_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(growth <span class="sc">~</span> treatment, <span class="at">data =</span> fish_data)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Displaying the model summary</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(initial_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = growth ~ treatment, data = fish_data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-4.911 -1.183 -0.116  1.315  4.269 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  10.0688     0.2590  38.875  &lt; 2e-16 ***
+treatmentB    2.2240     0.3663   6.072  2.4e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.831 on 98 degrees of freedom
+Multiple R-squared:  0.2734,    Adjusted R-squared:  0.2659 
+F-statistic: 36.87 on 1 and 98 DF,  p-value: 2.403e-08</code></pre>
+</div>
+</div>
+<p>#Coefficients:</p>
+<p># Estimate Std. Error t value Pr(&gt;|t|)</p>
+<p># (Intercept) 10.0688 0.2590 38.875 &lt; 2e-16 ***</p>
+<p># treatmentB 2.2240 0.3663 6.072 <u>2.4e-08 ***</u></p>
+<p>As we can see on the output of the lm model, the model suggests that treatment does have a significant effect on growth compared to treatment A due to the less than 0.05 P value. However, since this data set is simulated, there is no actual difference between treatment A and treatment B. The model gives false indication of effect due to the fact that it fail to take in top account the effects of different tanks on the growth.</p>
+<ul>
+<li><u><strong>Suggest a better model and show that it performs better</strong></u></li>
+</ul>
+<p>A potential better model would be one that take in to account the effect of the tanks as a predictor. This would be a mixed effects model. By using a mixed effect model, also known as random-effects model, we can model the random effects tank will have on the growth, and give an understanding of within-tank variability.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'Matrix'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Creating a mixed effects model to include tank as a predicotr variable. </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>mixed_model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(growth <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> tank), <span class="at">data =</span> fish_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Showing model sumamry </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mixed_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: growth ~ treatment + (1 | tank)
+   Data: fish_data
+
+REML criterion at convergence: 404.5
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.68159 -0.64584 -0.06332  0.71793  2.33102 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ tank     (Intercept) 0.000    0.000   
+ Residual             3.354    1.831   
+Number of obs: 100, groups:  tank, 5
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept)  10.0688     0.2590  38.875
+treatmentB    2.2240     0.3663   6.072
+
+Correlation of Fixed Effects:
+           (Intr)
+treatmentB -0.707
+optimizer (nloptwrap) convergence code: 0 (OK)
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mixed%20effect%20model%202.JPG" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Mixed effect model output</figcaption>
+</figure>
+</div>
+<p>The model did get an error code with “boundary (singular) fit: see help(‘isSingular’)”, menaing that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.</p>
+<p>I tried different mixed effects model like</p>
+<p>mixed_model &lt;- lmer(growth ~ treatment + (1 + treatment | tank), data = fish_data) but with the same result of this error code.</p>
+<ol start="2" type="1">
+<li><u><strong>What advice do you give the authors?</strong></u></li>
+</ol>
+<p>My first advice would be to try and discuss the small effect size of their study rather than imminently trying to artificially enahnce their results. They do not interpret the practical significance of the effect size, trying to find an explanation and the implications of having such a small effect size is important to understanding the impacts of the treatment.</p>
+<p>Interpreting the findings of artificially enhances sample size should be done with caution. I would recommend the authors to not be so brass as to state the significance of their findings without discussing the potential limitations and biases assisted with the method they used to acquire this artificial result. they need to discuss this and justify their use of this method and whether or not it can be trusted due to the artificial enhancement.</p>
+<p>Even if the p value was significant the second time around , they do not discuss what this actually means in terms of practical significance. What does this mean for the real world, merely getting statistically significant result should not be the “end all be all” of data analyses. one needs to apply real world meaning to our findings and not just show a p value and expect it to tell a story on its own and be enough to show a valid result.</p>
+<p>I would also recommend them to look in to other factors which can interfere with their results like study design, measurement instrument error, human error etc. that may have influenced the statistical analyses.</p>
+<ol start="3" type="1">
+<li><u><strong>The lynx dataset. Plot the data then examine the acf and pacf for these data. What can you infer from these about the type of autocorrelation in these data?</strong></u></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use the package datasets </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#load in the data from lynx and make a time series </span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"lynx"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>lynx_ts <span class="ot">&lt;-</span> <span class="fu">ts</span>(lynx, <span class="at">start =</span> <span class="dv">1821</span>, <span class="at">end =</span> <span class="dv">1934</span>, <span class="at">frequency =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Creating the plot </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">time</span>(lynx_ts), <span class="at">y =</span> lynx_ts), <span class="at">color =</span> <span class="st">"#1f78b4"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Number of Lynx"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Number of Lynx Trapped in Canada (1821-1934)"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">plot.caption =</span> <span class="st">"Data Source: Lynx Dataset"</span>) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"#DDDDDD"</span>),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Don't know how to automatically pick scale for object of type &lt;ts&gt;. Defaulting
+to continuous.
+Don't know how to automatically pick scale for object of type &lt;ts&gt;. Defaulting
+to continuous.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lynx%20TS%20plot.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Lynx TS plot</figcaption>
+</figure>
+</div>
+<ul>
+<li><u><strong>Now over to examine the acf and pacf:</strong></u></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the ACF and PACF</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>acf_result <span class="ot">&lt;-</span> <span class="fu">acf</span>(lynx_ts, <span class="at">lag.max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pacf_result <span class="ot">&lt;-</span> <span class="fu">pacf</span>(lynx_ts, <span class="at">lag.max =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the ACF</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acf_result, <span class="at">main =</span> <span class="st">"ACF of Lynx Data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the PACF</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pacf_result, <span class="at">main =</span> <span class="st">"PACF of Lynx Data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ACF%20lynx.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">ACF output</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="PACF%20of%20lynx.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">PACF output</figcaption>
+</figure>
+</div>
+<p>When looking at ACF plots, we look for spikes above the blue line, if the plot has these lines about the blue dashed like it indicates auto correlations of the lags.</p>
+<p>In this instance, the spikes seemsto be exponentially declining in the ACF plot, while in the PCAF plot contains spike in the first and more lags. Whit these criteria met, it seems as if this is an auto regressive process. And since the first spike of the ACF plot is significant, and after which an exponential decline occurs, we can infer that this is a first order auto regressive process. Given the amount of spikes above the dashed line in the ACF plot, there is a strong autocorrelation present in the data. this means that the current level of lynx population is dependent on the amount of lynx in the previous time step with some lagged effect.</p>
+<ol start="4" type="1">
+<li>Chironomid species richness</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the file path</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="st">"chironomid.txt"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the TXT file</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.table</span>(file_path, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert it into a dataframe</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.</p>
+<ul>
+<li><p><u><strong>What type of analysis is appropriate?</strong></u></p>
+<p>An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.</p></li>
+<li><p><u>Fit the model</u></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the multiple regression model</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(noSpecies <span class="sc">~</span> temperature <span class="sc">+</span> pH <span class="sc">+</span> depth, <span class="at">data =</span> df)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of the model</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = noSpecies ~ temperature + pH + depth, data = df)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-16.1757  -5.4403   0.0547   5.1252  17.5230 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 13.82959    5.96676   2.318   0.0218 *  
+temperature  1.44286    0.11144  12.947   &lt;2e-16 ***
+pH          -1.35275    0.81540  -1.659   0.0992 .  
+depth        0.05710    0.09188   0.621   0.5352    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.638 on 153 degrees of freedom
+Multiple R-squared:  0.5829,    Adjusted R-squared:  0.5747 
+F-statistic: 71.28 on 3 and 153 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="multiple%20regression%20output.JPG" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Multiple regression model output</figcaption>
+</figure>
+</div>
+<p>Here we can see that temperature is the only thing with a significant p value, which could be interpreted in a way that temperature if the only thing affecting species richness.</p>
+<ul>
+<li><u>Check the model diagnostics. Justify any changes you need to make to the model</u></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plotting the residuals vs. fitted values</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model<span class="sc">$</span>fitted.values, model<span class="sc">$</span>residuals, <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>, <span class="at">main =</span> <span class="st">"Residuals vs. Fitted Values"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking normality of residuals using a QQ plot</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(model<span class="sc">$</span>residuals)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(model<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Heteroscedasticity - Residuals vs. Fitted Values</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model<span class="sc">$</span>fitted.values, <span class="fu">abs</span>(model<span class="sc">$</span>residuals), <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Absolute Residuals"</span>, <span class="at">main =</span> <span class="st">"Residuals vs. Fitted Values"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Residual%20vs%20fitted%20value%20(task4).png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">residual vs.&nbsp;fitted values</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Normal%20q-q%20plot.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Q-Q plot</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="normal%20q-q%20plot%20with%20line.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Normal Q-Q plot w/line</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Heteroscedasticity%20lm%20model%20(taks%204).png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Heteroscedasticity</figcaption>
+</figure>
+</div>
+<ul>
+<li><p>There does not seem to be any pattern in the Heteroscedasticity, which is a good thing. Model checks out for this part.</p></li>
+<li><p>The points in the Q-Q plot roughly follows a straight line, indicating normally distribution. The model checks out for normal distribution</p></li>
+<li><p>The point does deviate a bit when looking at the plot with a line. Here it seems as if the plot has a “heavy tail”, meaning that the dots deviates from the line at both ends of the plot. Suggesting outliers in the residual distribution. There is some deviation, so I would not be 100% confident that there is normal distrubution here. But we can try to see if other model could work. If not, we can proceed with the model as is.</p></li>
+</ul>
+<p>One thing we can try to do to fix the issue of heavy tails is to log transform the respons variable. And run the whole thing again</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply logarithmic transformation to the response variable</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>log_noSpecies <span class="ot">&lt;-</span> <span class="fu">log</span>(df<span class="sc">$</span>noSpecies)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the multiple regression model with the transformed response variable</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(log_noSpecies <span class="sc">~</span> temperature <span class="sc">+</span> pH <span class="sc">+</span> depth, <span class="at">data =</span> df)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of the model</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log_noSpecies ~ temperature + pH + depth, data = df)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.93787 -0.22235  0.09887  0.28159  0.82261 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.796114   0.423460   6.603 6.26e-10 ***
+temperature  0.085706   0.007909  10.837  &lt; 2e-16 ***
+pH          -0.131839   0.057869  -2.278   0.0241 *  
+depth       -0.001801   0.006521  -0.276   0.7828    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.4711 on 153 degrees of freedom
+Multiple R-squared:  0.5061,    Adjusted R-squared:  0.4965 
+F-statistic: 52.27 on 3 and 153 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Residual analysis</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals vs. Fitted Values</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model<span class="sc">$</span>fitted.values, model<span class="sc">$</span>residuals, <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>, <span class="at">main =</span> <span class="st">"Residuals vs. Fitted Values"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normality of Residuals - QQ Plot</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(model<span class="sc">$</span>residuals)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(model<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Heteroscedasticity - Residuals vs. Fitted Values</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model<span class="sc">$</span>fitted.values, <span class="fu">abs</span>(model<span class="sc">$</span>residuals), <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Absolute Residuals"</span>, <span class="at">main =</span> <span class="st">"Residuals vs. Fitted Values"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><em>The diagnostics of the model with the log transformed response variable looks alot worse in the diagnostics, and will therefor not be used further!</em> I will continue to use the original model.</p>
+<ul>
+<li><u>Predict species richness at -5, 5, and 30°C and show the 95% confidence intervals.</u></li>
+</ul>
+<p><u><strong>Answer</strong></u>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Temperature values for prediction</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>new_temperatures <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">30</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new data frame for prediction</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">temperature =</span> new_temperatures, <span class="at">pH =</span> <span class="fu">mean</span>(df<span class="sc">$</span>pH), <span class="at">depth =</span> <span class="fu">mean</span>(df<span class="sc">$</span>depth))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict species richness</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> new_data, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame with predictions and confidence intervals</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Temperature =</span> new_temperatures, </span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>                      <span class="at">SpeciesRichness =</span> predictions[, <span class="st">"fit"</span>],</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">LowerCI =</span> predictions[, <span class="st">"lwr"</span>],</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">UpperCI =</span> predictions[, <span class="st">"upr"</span>])</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the results</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Temperature SpeciesRichness  LowerCI  UpperCI
+1          -5        1.509552 1.225181 1.793922
+2           5        2.366611 2.226967 2.506256
+3          30        4.509260 4.226945 4.791576</code></pre>
+</div>
+</div>
+<ul>
+<li><u>Show results in both in table and graph</u>:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the results</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(results<span class="sc">$</span>Temperature, results<span class="sc">$</span>SpeciesRichness, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Temperature"</span>, <span class="at">ylab =</span> <span class="st">"Species Richness"</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="fu">min</span>(results<span class="sc">$</span>LowerCI), <span class="fu">max</span>(results<span class="sc">$</span>UpperCI)), </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Predicted Species Richness at Different Temperatures"</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding confidence intervals as error bars</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(results<span class="sc">$</span>Temperature, results<span class="sc">$</span>LowerCI, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(results<span class="sc">$</span>Temperature, results<span class="sc">$</span>UpperCI, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(results<span class="sc">$</span>Temperature, results<span class="sc">$</span>LowerCI, results<span class="sc">$</span>Temperature, results<span class="sc">$</span>UpperCI, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding legend for confidence intervals</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>, <span class="at">legend =</span> <span class="st">"95% Confidence Interval"</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Quatro_doc_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Speciess%20richenss%20at%20different%20temperatures%20figure.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Speciess richness at differing temperatures</figcaption>
+</figure>
+</div>
+<ul>
+<li><u>Now to make a table using the knitr package:</u></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a data frame with predictions and confidence intervals</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>results_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Temperature =</span> new_temperatures,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">SpeciesRichness =</span> predictions[, <span class="st">"fit"</span>],</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">LowerCI =</span> predictions[, <span class="st">"lwr"</span>],</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">UpperCI =</span> predictions[, <span class="st">"upr"</span>])</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the results table using 'kable'</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(results_table, <span class="at">caption =</span> <span class="st">"Predicted Species Richness at Different Temperatures"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Predicted Species Richness at Different Temperatures</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Temperature</th>
+<th style="text-align: right;">SpeciesRichness</th>
+<th style="text-align: right;">LowerCI</th>
+<th style="text-align: right;">UpperCI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-5</td>
+<td style="text-align: right;">1.509552</td>
+<td style="text-align: right;">1.225181</td>
+<td style="text-align: right;">1.793922</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.366611</td>
+<td style="text-align: right;">2.226967</td>
+<td style="text-align: right;">2.506256</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">4.509260</td>
+<td style="text-align: right;">4.226945</td>
+<td style="text-align: right;">4.791576</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="table%20species%20richness%20at%20different%20temperatures.JPG" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Table of speciess richness at differing temperatures</figcaption>
+</figure>
+</div>
+<p><u><strong>Write a biological interpretation of your model.</strong></u></p>
+<ul>
+<li><p>This model shows that the species richness is negative at negative temperature values. In reality, this makes no sense as there cannot be negative number of species. This could mean there is some limitations to the data or most likely the model itself.</p></li>
+<li><p>At the positive temperature values, the species richness seems to increase, showing that higher temperatures can facilitate a larger number of species.</p></li>
+</ul>
 </section>
 
 </main>

@@ -102,10 +102,6 @@ mixed_model <- lmer(growth ~ treatment + (1 | tank), data = fish_data)
 #summary
 summary(mixed_model)
 
-#using a glmmm 
-glmm_model <- glmer(growth ~ treatment + (1 | tank), data = fish_data, family = Gamma())
-#summary 
-summary(glmm_model)
 
 #loading in the dataset lynx fro mthe dataseries package 
 data("lynx")
