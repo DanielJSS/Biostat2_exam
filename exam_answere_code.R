@@ -144,3 +144,30 @@ data <- read.table(file_path, header = TRUE)
 # Convert it into a dataframe
 df <- as.data.frame(data)
 show(df)
+
+
+#What type of analyses is appropriate? 
+#first we can explore the data
+
+#Exploratory Data Analysis
+# Summary statistics
+summary(df)
+# Scatterplot matrix
+pairs(df)
+# Correlation matrix
+cor(df)
+
+
+# Fit the multiple regression model
+model <- lm(noSpecies ~ temperature + pH + depth, data = df)
+
+# Summary of the model
+summary(model)
+
+# Plotting the residuals vs. fitted values
+plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted Values")
+
+# Checking normality of residuals using a QQ plot
+qqnorm(model$residuals)
+qqline(model$residuals)
+

@@ -242,4 +242,33 @@ df <- as.data.frame(data)
 
 ```
 
-The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.
+-   The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.
+
+    [What type of analysis is appropriate?]{.underline}
+
+-   An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.
+
+[Fit the model]{.underline}
+
+```{r}
+# Fit the multiple regression model
+model <- lm(noSpecies ~ temperature + pH + depth, data = df)
+
+# Summary of the model
+summary(model)
+```
+
+![Multiple regression model output](images/multiple regression output.JPG)
+
+Here we can see that temperature is the only thing with a significant p value, which could be interpreted in a way that temperature if the only thing affecting species richness.
+
+[Check the model diagnostics. Justify any changes you need to make to the model]{.underline}
+
+```{r}
+# Plotting the residuals vs. fitted values
+plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted Values")
+
+# Checking normality of residuals using a QQ plot
+qqnorm(model$residuals)
+qqline(model$residuals)
+```
