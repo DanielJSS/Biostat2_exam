@@ -2,7 +2,7 @@
 
 ####Part A----
 # Required packages
-required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "MASS", "knitr")
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "knitr")
 
 # Install required packages if not already installed
 for (pkg in required_packages) {
@@ -12,6 +12,10 @@ for (pkg in required_packages) {
   }
 }
 
+# Load required packages
+for (package in required_packages) {
+  library(package, character.only = TRUE)
+}
 
 # Set the file path to get data 
 file_path <- "Data/Dataset_S1.csv"
