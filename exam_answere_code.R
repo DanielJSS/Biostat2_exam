@@ -2,7 +2,7 @@
 
 ####Part A----
 # Required packages
-required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "MASS")
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "MASS", "knitr")
 
 # Install required packages if not already installed
 for (pkg in required_packages) {
@@ -121,7 +121,7 @@ ggplot() +
         panel.grid.major = element_line(color = "#DDDDDD"),
         panel.grid.minor = element_blank())                          
                                                                                       
-#examine the acf and pacf
+###examine the acf and pacf
 
 # Calculate the ACF and PACF
 acf_result <- acf(lynx_ts, lag.max = 30)
@@ -146,7 +146,7 @@ df <- as.data.frame(data)
 show(df)
 
 
-#What type of analyses is appropriate? 
+###What type of analyses is appropriate? 
 #first we can explore the data
 
 #Exploratory Data Analysis
@@ -158,7 +158,7 @@ pairs(df)
 cor(df)
 
 
-# Fit the multiple regression model
+###Fit the multiple regression model
 model <- lm(noSpecies ~ temperature + pH + depth, data = df)
 
 # Summary of the model
@@ -171,3 +171,81 @@ plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Resid
 qqnorm(model$residuals)
 qqline(model$residuals)
 
+# Heteroscedasticity - Residuals vs. Fitted Values
+plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
+
+
+#log transforming the repons 
+# Apply logarithmic transformation to the response variable
+df$log_noSpecies <- log(df$noSpecies)
+
+# Fit the multiple regression model with the transformed response variable
+model <- lm(log_noSpecies ~ temperature + pH + depth, data = df)
+
+# Summary of the model
+summary(model)
+
+# Residual analysis
+
+# Residuals vs. Fitted Values
+plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted Values")
+
+# Normality of Residuals - QQ Plot
+qqnorm(model$residuals)
+qqline(model$residuals)
+
+# Heteroscedasticity - Residuals vs. Fitted Values
+plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
+
+###Go back to the origianl model 
+model <- lm(noSpecies ~ temperature + pH + depth, data = df)
+
+
+
+
+
+
+
+
+
+###Predic speceiss richness 
+
+# Temperature values for prediction
+new_temperatures <- c(-5, 5, 30)
+
+# Create a new data frame for prediction
+new_data <- data.frame(temperature = new_temperatures, pH = mean(df$pH), depth = mean(df$depth))
+
+# Predict species richness
+predictions <- predict(model, newdata = new_data, interval = "confidence", level = 0.95)
+
+# Create a data frame with predictions and confidence intervals
+results <- data.frame(Temperature = new_temperatures, 
+                      SpeciesRichness = predictions[, "fit"],
+                      LowerCI = predictions[, "lwr"],
+                      UpperCI = predictions[, "upr"])
+
+# Print the results
+print(results)
+
+# Plotting the results
+plot(results$Temperature, results$SpeciesRichness, type = "l", lwd = 2,
+     xlab = "Temperature", ylab = "Species Richness",
+     ylim = c(min(results$LowerCI), max(results$UpperCI)), 
+     main = "Predicted Species Richness at Different Temperatures")
+# Adding confidence intervals as error bars
+lines(results$Temperature, results$LowerCI, lty = 2, col = "blue")
+lines(results$Temperature, results$UpperCI, lty = 2, col = "blue")
+segments(results$Temperature, results$LowerCI, results$Temperature, results$UpperCI, lwd = 2)
+# Adding legend for confidence intervals
+legend("topleft", legend = "95% Confidence Interval", lty = 2, col = "blue")
+
+
+# Create a data frame with predictions and confidence intervals
+results_table <- data.frame(Temperature = new_temperatures,
+                      SpeciesRichness = predictions[, "fit"],
+                      LowerCI = predictions[, "lwr"],
+                      UpperCI = predictions[, "upr"])
+
+# Print the results table using 'kable'
+kable(results_table, caption = "Predicted Species Richness at Different Temperatures")

@@ -103,7 +103,7 @@ print(plot)
 
 -   The main issue with this plan is that they only look at treatment as the predictor variable. As if treatment is the only thing that will in any way effect the outcome. If this was the only thing that was different between experiments, this could work. However, here the fish is also in different tanks. Meaning we cannot just ignore the effects of the tanks, at least not without testing for it first. Therefor, just assuming a linear model with only treatment as predictor is not a good plan, and ignores the effect tanks might have for the results outcome.
 
--   Simulate the data, and show the problem of this model
+-   [**Simulate the data, and show the problem of this model**]{.underline}
 
 ```{r}
 #Simulating the data to show the problem 
@@ -135,7 +135,7 @@ summary(initial_model)
 
 As we can see on the output of the lm model, the model suggests that treatment does have a significant effect on growth compared to treatment A due to the less than 0.05 P value. However, since this data set is simulated, there is no actual difference between treatment A and treatment B. The model gives false indication of effect due to the fact that it fail to take in top account the effects of different tanks on the growth.
 
--   [Suggest a better model and show that it performs better]{.underline}
+-   [**Suggest a better model and show that it performs better**]{.underline}
 
 A potential better model would be one that take in to account the effect of the tanks as a predictor. This would be a mixed effects model. By using a mixed effect model, also known as random-effects model, we can model the random effects tank will have on the growth, and give an understanding of within-tank variability.
 
@@ -176,7 +176,7 @@ Even if the p value was significant the second time around , they do not discuss
 
 I would also recommend them to look in to other factors which can interfere with their results like study design, measurement instrument error, human error etc. that may have influenced the statistical analyses.
 
-3.  The lynx dataset. Plot the data then examine the acf and pacf for these data. What can you infer from these about the type of autocorrelation in these data?
+3.  [**The lynx dataset. Plot the data then examine the acf and pacf for these data. What can you infer from these about the type of autocorrelation in these data?**]{.underline}
 
 ```{r}
 #use the package datasets 
@@ -205,7 +205,7 @@ ggplot() +
 
 ![Lynx TS plot](Lynx TS plot.png)
 
-[Now over to examine the acf and pacf:]{.underline}
+-   [**Now over to examine the acf and pacf:**]{.underline}
 
 ```{r}
 # Calculate the ACF and PACF
@@ -242,13 +242,13 @@ df <- as.data.frame(data)
 
 ```
 
--   The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.
+The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.
 
-    [What type of analysis is appropriate?]{.underline}
+-   [**What type of analysis is appropriate?**]{.underline}
 
--   An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.
+    An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.
 
-[Fit the model]{.underline}
+-    [Fit the model]{.underline}
 
 ```{r}
 # Fit the multiple regression model
@@ -262,13 +262,124 @@ summary(model)
 
 Here we can see that temperature is the only thing with a significant p value, which could be interpreted in a way that temperature if the only thing affecting species richness.
 
-[Check the model diagnostics. Justify any changes you need to make to the model]{.underline}
+-   [Check the model diagnostics. Justify any changes you need to make to the model]{.underline}
 
 ```{r}
-# Plotting the residuals vs. fitted values
+#Plotting the residuals vs. fitted values
 plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted Values")
 
 # Checking normality of residuals using a QQ plot
 qqnorm(model$residuals)
 qqline(model$residuals)
+
+# Heteroscedasticity - Residuals vs. Fitted Values
+plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
 ```
+
+![residual vs. fitted values](Residual vs fitted value (task4).png)
+
+![Q-Q plot](Normal q-q plot.png)
+
+![Normal Q-Q plot w/line](normal q-q plot with line.png)
+
+![Heteroscedasticity](Heteroscedasticity lm model (taks 4).png)
+
+-   There does not seem to be any pattern in the Heteroscedasticity, which is a good thing. Model checks out for this part.
+
+-   The points in the Q-Q plot roughly follows a straight line, indicating normally distribution. The model checks out for normal distribution
+
+-   The point does deviate a bit when looking at the plot with a line. Here it seems as if the plot has a "heavy tail", meaning that the dots deviates from the line at both ends of the plot. Suggesting outliers in the residual distribution. There is some deviation, so I would not be 100% confident that there is normal distrubution here. But we can try to see if other model could work. If not, we can proceed with the model as is.
+
+One thing we can try to do to fix the issue of heavy tails is to log transform the respons variable. And run the whole thing again
+
+```{r}
+# Apply logarithmic transformation to the response variable
+df$log_noSpecies <- log(df$noSpecies)
+
+# Fit the multiple regression model with the transformed response variable
+model <- lm(log_noSpecies ~ temperature + pH + depth, data = df)
+
+# Summary of the model
+summary(model)
+
+# Residual analysis
+
+# Residuals vs. Fitted Values
+plot(model$fitted.values, model$residuals, xlab = "Fitted Values", ylab = "Residuals", main = "Residuals vs. Fitted Values")
+
+# Normality of Residuals - QQ Plot
+qqnorm(model$residuals)
+qqline(model$residuals)
+
+# Heteroscedasticity - Residuals vs. Fitted Values
+plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
+
+```
+
+*The diagnostics of the model with the log transformed response variable looks alot worse in the diagnostics, and will therefor not be used further!* I will continue to use the original model.
+
+-   [Predict species richness at -5, 5, and 30°C and show the 95% confidence intervals.]{.underline}
+
+[**Answer**]{.underline}:
+
+```{r}
+# Temperature values for prediction
+new_temperatures <- c(-5, 5, 30)
+
+# Create a new data frame for prediction
+new_data <- data.frame(temperature = new_temperatures, pH = mean(df$pH), depth = mean(df$depth))
+
+# Predict species richness
+predictions <- predict(model, newdata = new_data, interval = "confidence", level = 0.95)
+
+# Create a data frame with predictions and confidence intervals
+results <- data.frame(Temperature = new_temperatures, 
+                      SpeciesRichness = predictions[, "fit"],
+                      LowerCI = predictions[, "lwr"],
+                      UpperCI = predictions[, "upr"])
+
+# Print the results
+print(results)
+
+```
+
+![Species richness predictions at different temperatures](images/speceis richness predictions.JPG)
+
+-   [Show results in both in table and graph]{.underline}:
+
+```{r}
+# Plotting the results
+plot(results$Temperature, results$SpeciesRichness, type = "l", lwd = 2,
+     xlab = "Temperature", ylab = "Species Richness",
+     ylim = c(min(results$LowerCI), max(results$UpperCI)), 
+     main = "Predicted Species Richness at Different Temperatures")
+# Adding confidence intervals as error bars
+lines(results$Temperature, results$LowerCI, lty = 2, col = "blue")
+lines(results$Temperature, results$UpperCI, lty = 2, col = "blue")
+segments(results$Temperature, results$LowerCI, results$Temperature, results$UpperCI, lwd = 2)
+# Adding legend for confidence intervals
+legend("topleft", legend = "95% Confidence Interval", lty = 2, col = "blue")
+```
+
+![Speciess richness at differing temperatures](Speciess richenss at different temperatures figure.png)
+
+-   [Now to make a table using the knitr package:]{.underline}
+
+```{r}
+#Create a data frame with predictions and confidence intervals
+results_table <- data.frame(Temperature = new_temperatures,
+                      SpeciesRichness = predictions[, "fit"],
+                      LowerCI = predictions[, "lwr"],
+                      UpperCI = predictions[, "upr"])
+
+# Print the results table using 'kable'
+kable(results_table, caption = "Predicted Species Richness at Different Temperatures")
+```
+
+![Table of speciess richness at differing temperatures](table species richness at different temperatures.JPG)
+
+[**Write a biological interpretation of your model.**]{.underline}
+
+-   This model shows that the species richness is negative at negative temperature values. In reality, this makes no sense as there cannot be negative number of species. This could mean there is some limitations to the data or most likely the model itself.
+
+-   At the positive temperature values, the species richness seems to increase, showing that higher temperatures can facilitate a larger number of species.
