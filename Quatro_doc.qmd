@@ -26,7 +26,7 @@ Maureaud, Aurore et al. (2019), Data from: Biodiversity-ecosystem functioning re
 
 ```{r}
 # Required packages
-required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2")
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "knitr")
 
 # Install required packages if not already installed
 for (pkg in required_packages) {
@@ -34,6 +34,10 @@ for (pkg in required_packages) {
     install.packages(pkg)
     library(pkg, character.only = TRUE)
   }
+}
+# Load required packages
+for (package in required_packages) {
+  library(package, character.only = TRUE)
 }
 ```
 
@@ -147,9 +151,9 @@ mixed_model <- lmer(growth ~ treatment + (1 | tank), data = fish_data)
 summary(mixed_model)
 ```
 
-![Mixed effect model output](mixed effect model 2.JPG)
+![Mixed effect model output](mixed%20effect%20model%202.JPG)
 
-The model did get an error code with "boundary (singular) fit: see help('isSingular')", menaing that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.
+The model did get an error code with "boundary (singular) fit: see help('isSingular')", meaning that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.
 
 I tried different mixed effects model like
 
@@ -157,11 +161,15 @@ mixed_model \<- lmer(growth \~ treatment + (1 + treatment \| tank), data = fish_
 
 2.  [**What advice do you give the authors?**]{.underline}
 
-My first advice would be to try and discuss the small effect size of their study rather than imminently trying to artificially enahnce their results. They do not interpret the practical significance of the effect size, trying to find an explanation and the implications of having such a small effect size is important to understanding the impacts of the treatment.
+My first advice would be to try and discuss the small effect size of their study rather than imminently trying to artificially enhance their results. They do not interpret the practical significance of the effect size, trying to find an explanation and the implications of having such a small effect size is important to understanding the impacts of the treatment.
 
 Interpreting the findings of artificially enhances sample size should be done with caution. I would recommend the authors to not be so brass as to state the significance of their findings without discussing the potential limitations and biases assisted with the method they used to acquire this artificial result. they need to discuss this and justify their use of this method and whether or not it can be trusted due to the artificial enhancement.
 
+furthermore, by artificially increasing the sample size we can encounter a Type I error. When you make the sample size larger, you also make the number of statistical tests ran larger. This can create a so called "false positive" also called a type I error which means that you can get a significant P value therefor rejecting the null hypothesis when it in fact is true. But because of this artificial enhancing, we get significant p value.
+
 Even if the p value was significant the second time around , they do not discuss what this actually means in terms of practical significance. What does this mean for the real world, merely getting statistically significant result should not be the "end all be all" of data analyses. one needs to apply real world meaning to our findings and not just show a p value and expect it to tell a story on its own and be enough to show a valid result.
+
+Another potential error is that if the sample size taken from the real world is not representing the true population variability, artificially increasing the sample will only make this issue larger and our conclusion will not represent the real population
 
 I would also recommend them to look in to other factors which can interfere with their results like study design, measurement instrument error, human error etc. that may have influenced the statistical analyses.
 
@@ -215,7 +223,7 @@ plot(pacf_result, main = "PACF of Lynx Data")
 
 When looking at ACF plots, we look for spikes above the blue line, if the plot has these lines about the blue dashed like it indicates auto correlations of the lags.
 
-In this instance, the spikes seemsto be exponentially declining in the ACF plot, while in the PCAF plot contains spike in the first and more lags. Whit these criteria met, it seems as if this is an auto regressive process. And since the first spike of the ACF plot is significant, and after which an exponential decline occurs, we can infer that this is a first order auto regressive process. Given the amount of spikes above the dashed line in the ACF plot, there is a strong autocorrelation present in the data. this means that the current level of lynx population is dependent on the amount of lynx in the previous time step with some lagged effect.
+In this instance, the spikes seems to be exponentially declining in the ACF plot, while in the PCAF plot contains spike in the first and more lags. Whit these criteria met, it seems as if this is an auto regressive process. And since the first spike of the ACF plot is significant, and after which an exponential decline occurs, we can infer that this is a first order auto regressive process. Given the amount of spikes above the dashed line in the ACF plot, there is a strong autocorrelation present in the data. this means that the current level of lynx population is dependent on the amount of lynx in the previous time step with some lagged effect.
 
 4.  Chironomid species richness
 
@@ -231,7 +239,7 @@ df <- as.data.frame(data)
 
 ```
 
-The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.
+The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and out compete the other to extinction.
 
 -   [**What type of analysis is appropriate?**]{.underline}
 
@@ -247,7 +255,7 @@ model <- lm(noSpecies ~ temperature + pH + depth, data = df)
 summary(model)
 ```
 
-![Multiple regression model output](multiple regression output.JPG)
+![Multiple regression model output](multiple%20regression%20output.JPG)
 
 Here we can see that temperature is the only thing with a significant p value, which could be interpreted in a way that temperature if the only thing affecting species richness.
 
@@ -302,6 +310,11 @@ qqline(model$residuals)
 
 # Heteroscedasticity - Residuals vs. Fitted Values
 plot(model$fitted.values, abs(model$residuals), xlab = "Fitted Values", ylab = "Absolute Residuals", main = "Residuals vs. Fitted Values")
+
+
+###Go back to the origianl model 
+model <- lm(noSpecies ~ temperature + pH + depth, data = df)
+
 
 ```
 
