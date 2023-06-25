@@ -2,7 +2,7 @@
 
 ####Part A----
 # Required packages
-required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "knitr")
+required_packages <- c("tidyverse", "readxl", "viridisLite", "scales", "ggplot2", "lme4", "datasets", "knitr", "quarto", "tinytex")
 
 # Install required packages if not already installed
 for (pkg in required_packages) {
@@ -249,3 +249,5 @@ results_table <- data.frame(Temperature = new_temperatures,
 
 # Print the results table using 'kable'
 kable(results_table, caption = "Predicted Species Richness at Different Temperatures")
+
+

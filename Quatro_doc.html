@@ -337,15 +337,17 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <figcaption class="figure-caption">Mixed effect model output</figcaption>
 </figure>
 </div>
-<p>The model did get an error code with “boundary (singular) fit: see help(‘isSingular’)”, menaing that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.</p>
+<p>The model did get an error code with “boundary (singular) fit: see help(‘isSingular’)”, meaning that there is a near perfect collinearity between the variables. Meaning it cannot give accurate description of the model.</p>
 <p>I tried different mixed effects model like</p>
 <p>mixed_model &lt;- lmer(growth ~ treatment + (1 + treatment | tank), data = fish_data) but with the same result of this error code.</p>
 <ol start="2" type="1">
 <li><u><strong>What advice do you give the authors?</strong></u></li>
 </ol>
-<p>My first advice would be to try and discuss the small effect size of their study rather than imminently trying to artificially enahnce their results. They do not interpret the practical significance of the effect size, trying to find an explanation and the implications of having such a small effect size is important to understanding the impacts of the treatment.</p>
+<p>My first advice would be to try and discuss the small effect size of their study rather than imminently trying to artificially enhance their results. They do not interpret the practical significance of the effect size, trying to find an explanation and the implications of having such a small effect size is important to understanding the impacts of the treatment.</p>
 <p>Interpreting the findings of artificially enhances sample size should be done with caution. I would recommend the authors to not be so brass as to state the significance of their findings without discussing the potential limitations and biases assisted with the method they used to acquire this artificial result. they need to discuss this and justify their use of this method and whether or not it can be trusted due to the artificial enhancement.</p>
+<p>furthermore, by artificially increasing the sample size we can encounter a Type I error. When you make the sample size larger, you also make the number of statistical tests ran larger. This can create a so called “false positive” also called a type I error which means that you can get a significant P value therefor rejecting the null hypothesis when it in fact is true. But because of this artificial enhancing, we get significant p value.</p>
 <p>Even if the p value was significant the second time around , they do not discuss what this actually means in terms of practical significance. What does this mean for the real world, merely getting statistically significant result should not be the “end all be all” of data analyses. one needs to apply real world meaning to our findings and not just show a p value and expect it to tell a story on its own and be enough to show a valid result.</p>
+<p>Another potential error is that if the sample size taken from the real world is not representing the true population variability, artificially increasing the sample will only make this issue larger and our conclusion will not represent the real population</p>
 <p>I would also recommend them to look in to other factors which can interfere with their results like study design, measurement instrument error, human error etc. that may have influenced the statistical analyses.</p>
 <ol start="3" type="1">
 <li><u><strong>The lynx dataset. Plot the data then examine the acf and pacf for these data. What can you infer from these about the type of autocorrelation in these data?</strong></u></li>
@@ -425,7 +427,7 @@ to continuous.</code></pre>
 </figure>
 </div>
 <p>When looking at ACF plots, we look for spikes above the blue line, if the plot has these lines about the blue dashed like it indicates auto correlations of the lags.</p>
-<p>In this instance, the spikes seemsto be exponentially declining in the ACF plot, while in the PCAF plot contains spike in the first and more lags. Whit these criteria met, it seems as if this is an auto regressive process. And since the first spike of the ACF plot is significant, and after which an exponential decline occurs, we can infer that this is a first order auto regressive process. Given the amount of spikes above the dashed line in the ACF plot, there is a strong autocorrelation present in the data. this means that the current level of lynx population is dependent on the amount of lynx in the previous time step with some lagged effect.</p>
+<p>In this instance, the spikes seems to be exponentially declining in the ACF plot, while in the PCAF plot contains spike in the first and more lags. Whit these criteria met, it seems as if this is an auto regressive process. And since the first spike of the ACF plot is significant, and after which an exponential decline occurs, we can infer that this is a first order auto regressive process. Given the amount of spikes above the dashed line in the ACF plot, there is a strong autocorrelation present in the data. this means that the current level of lynx population is dependent on the amount of lynx in the previous time step with some lagged effect.</p>
 <ol start="4" type="1">
 <li>Chironomid species richness</li>
 </ol>
@@ -439,7 +441,7 @@ to continuous.</code></pre>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert it into a dataframe</span></span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and outcompete the other to extinction.</p>
+<p>The response variable here is species richness, given how this is count data (number of species). Models normally used for count data is Poisson distribution. The poisson distribution also assumes independence. Meaning here that the presence/absence of one species in the area does not affect the presence or absence of another. This can be true in ecological studies, usually since if there are multiple species cohabitation in an area they usually fill completely or at least slightly different ecological niches. If they had the same niche, they would compete and one would eventually win and out compete the other to extinction.</p>
 <ul>
 <li><p><u><strong>What type of analysis is appropriate?</strong></u></p>
 <p>An appropriate analyses here could be multiple regression analyses, since we are testing the relationship between multiple predictor variables and a continuous response variable.</p></li>
